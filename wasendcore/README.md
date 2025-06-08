@@ -130,6 +130,151 @@ await client.sessions.restartSession(sessionId);
 await client.sessions.deleteSession(sessionId);
 ```
 
+## Group Management
+
+The SDK provides comprehensive group management features for WhatsApp groups.
+
+### Creating a Group
+
+```go
+const group = await client.createGroup(sessionId, {
+    name: "My Group",
+    participants: [{ id: "+919876543210" }],
+    description: "Group description"
+});
+```
+
+### Group Configuration Options
+
+* `name`: The name of the group
+* `participants`: Array of participants with their phone numbers
+* `description`: Optional group description
+* `pictureUrl`: Optional URL for group picture
+* `tags`: Optional array of tags for the group
+
+### Managing Groups
+
+```go
+// Get all groups
+const groups = await client.getGroups(sessionId);
+
+// Get specific group info
+const groupInfo = await client.getGroup(sessionId, groupId);
+
+// Get group participants
+const participants = await client.getGroupParticipants(sessionId, groupId);
+
+// Add participants to group
+await client.addGroupParticipants(sessionId, groupId, {
+    participants: ["+919876543210"],
+    notify: true
+});
+
+// Remove participants from group
+await client.removeGroupParticipants(sessionId, groupId, {
+    participants: ["+919876543210"],
+    notify: true
+});
+
+// Promote participants to admin
+await client.promoteGroupParticipants(sessionId, groupId, {
+    participants: ["+919876543210"],
+    notify: true
+});
+
+// Demote participants from admin
+await client.demoteGroupParticipants(sessionId, groupId, {
+    participants: ["+919876543210"],
+    notify: true
+});
+```
+
+### Group Settings
+
+```go
+// Set group description
+await client.setGroupDescription(sessionId, groupId, {
+    description: "New group description"
+});
+
+// Set group subject/name
+await client.setGroupSubject(sessionId, groupId, {
+    subject: "New group name"
+});
+
+// Set group picture
+await client.setGroupPicture(sessionId, groupId, {
+    url: "https://example.com/picture.jpg",
+    format: "jpeg",
+    cropToSquare: true
+});
+
+// Delete group picture
+await client.deleteGroupPicture(sessionId, groupId);
+```
+
+### Group Security Settings
+
+```go
+// Set info admin only
+await client.setGroupInfoAdminOnly(sessionId, groupId, {
+    enabled: true
+});
+
+// Set messages admin only
+await client.setGroupMessagesAdminOnly(sessionId, groupId, {
+    enabled: true
+});
+
+// Get current security settings
+const infoAdminOnly = await client.getGroupInfoAdminOnly(sessionId, groupId);
+const messagesAdminOnly = await client.getGroupMessagesAdminOnly(sessionId, groupId);
+```
+
+### Group Invite Management
+
+```go
+// Get group invite code
+const inviteCode = await client.getGroupInviteCode(sessionId, groupId);
+
+// Revoke group invite code
+const newInviteCode = await client.revokeGroupInviteCode(sessionId, groupId);
+
+// Join a group using invite code
+const joinInfo = await client.getGroupJoinInfo(sessionId, "https://chat.whatsapp.com/1234567890abcdef");
+await client.joinGroup(sessionId, {
+    code: "https://chat.whatsapp.com/1234567890abcdef"
+});
+
+// Leave a group
+await client.leaveGroup(sessionId, groupId);
+```
+
+### Group Query Options
+
+When retrieving groups, you can use various query parameters:
+
+```go
+const groups = await client.getGroups(sessionId, {
+    sortBy: "creation",        // Sort by: 'id', 'subject', 'creation', 'participantsCount'
+    sortOrder: "desc",         // Sort order: 'asc' or 'desc'
+    limit: 50,                 // Maximum number of results
+    offset: 0,                 // Number of results to skip
+    exclude: ["participants"], // Fields to exclude from response
+    status: "ACTIVE",         // Filter by status: 'ACTIVE', 'ARCHIVED', 'DELETED'
+    search: "group name",     // Search by name or description
+    tags: ["tag1", "tag2"]    // Filter by tags
+});
+```
+
+### Group Status
+
+A group can have the following statuses:
+
+* `ACTIVE`: Group is active and can be used
+* `ARCHIVED`: Group has been archived
+* `DELETED`: Group has been deleted
+
 ## Authentication
 
 ### QR Code Authentication
