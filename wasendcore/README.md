@@ -613,26 +613,515 @@ await client.sendSeen(sessionId, seenRequest);
 console.log('Message marked as seen.');
 ```
 
+## Chat Management
+
+The SDK provides methods to manage and retrieve chat information.
+
+### Get All Chats
+
+Retrieves all chats for a given session. You can paginate and sort the results.
+
+**TypeScript**
+
+```go
+const chatsResponse = await client.getAllChats(sessionId, {
+    limit: 10,
+    sortBy: 'timestamp',
+    sortOrder: 'desc'
+});
+if (chatsResponse.success && chatsResponse.data) {
+    console.log('Chats:', chatsResponse.data);
+} else {
+    console.error('Failed to get chats:', chatsResponse.error);
+}
+```
+
+**Python**
+
+```python
+# Ensure client is initialized: client = WasendClient(api_key='your-api-key')
+# Assume sessionId is defined
+try:
+    chats_response = client.get_all_chats(
+        session=sessionId,
+        limit=10,
+        sort_by='timestamp',
+        sort_order='desc'
+    )
+    # Assuming the Python SDK client.get_all_chats returns an object
+    # with success, data, and error attributes similar to the TypeScript SDK SdkResponse.
+    if hasattr(chats_response, 'success') and chats_response.success and hasattr(chats_response, 'data'):
+        print(f"Chats: {chats_response.data}")
+    elif hasattr(chats_response, 'error'):
+        print(f"Failed to get chats: {chats_response.error}")
+    else:
+        print(f"Chats: {chats_response}") # If it returns data directly on success
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+// Ensure client is initialized: client, err := wasend.NewClient(...)
+// Assume sessionId is defined
+// Assuming the Go SDK's GetAllChats returns (SdkResponseLikeObject, error)
+// where SdkResponseLikeObject has Success, Data, Error fields.
+options := &wasend.GetChatsOptions{
+    Limit:     10,
+    SortBy:    "timestamp",
+    SortOrder: "desc",
+}
+sdkResponse, err := client.GetAllChats(sessionId, options) // Adjust method signature as per actual Go SDK
+if err != nil {
+    log.Fatalf("Error calling GetAllChats: %v", err)
+}
+if sdkResponse.Success {
+    // Access sdkResponse.Data, which might need type assertion, e.g.:
+    // chats, ok := sdkResponse.Data.([]wasend.Chat)
+    // if !ok { log.Fatalf("Could not assert Data to []wasend.Chat") }
+    fmt.Println("Chats:", sdkResponse.Data)
+} else {
+    log.Printf("Failed to get chats: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+// Ensure client is initialized: var client = new WasendClient(new WasendClientOptions { ... });
+// Assume sessionId is defined
+var options = new GetChatsOptions
+{
+    Limit = 10,
+    SortBy = "timestamp",
+    SortOrder = "desc"
+};
+var chatsResponse = await client.GetAllChatsAsync(sessionId, options); // Adjust method signature as per actual .NET SDK
+if (chatsResponse.Success && chatsResponse.Data != null)
+{
+    // Example: Assuming chatsResponse.Data is a list of Chat objects
+    Console.WriteLine($"Chats count: {chatsResponse.Data.Count}");
+    // foreach (var chat in chatsResponse.Data) { Console.WriteLine($"Chat ID: {chat.Id}"); }
+}
+else
+{
+    Console.WriteLine($"Failed to get chats: {chatsResponse.Error}");
+}
+```
+
+### Get Chats Overview
+
+Retrieves an overview of chats, allowing pagination and filtering by chat IDs.
+
+**TypeScript**
+
+```go
+const overviewResponse = await client.getChatsOverview(sessionId, {
+    limit: 10,
+    ids: ['1234567890@c.us', 'another_chat_id@c.us']
+});
+if (overviewResponse.success && overviewResponse.data) {
+    console.log('Chats Overview:', overviewResponse.data);
+} else {
+    console.error('Failed to get chats overview:', overviewResponse.error);
+}
+```
+
+**Python**
+
+```python
+try:
+    overview_response = client.get_chats_overview(
+        session=sessionId,
+        limit=10,
+        ids=['1234567890@c.us', 'another_chat_id@c.us']
+    )
+    if hasattr(overview_response, 'success') and overview_response.success and hasattr(overview_response, 'data'):
+        print(f"Chats Overview: {overview_response.data}")
+    elif hasattr(overview_response, 'error'):
+        print(f"Failed to get chats overview: {overview_response.error}")
+    else:
+        print(f"Chats Overview: {overview_response}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+options := &wasend.GetChatsOverviewOptions{
+    Limit: 10,
+    IDs:   []string{"1234567890@c.us", "another_chat_id@c.us"},
+}
+sdkResponse, err := client.GetChatsOverview(sessionId, options) // Adjust method signature as per actual Go SDK
+if err != nil {
+    log.Fatalf("Error calling GetChatsOverview: %v", err)
+}
+if sdkResponse.Success {
+    fmt.Println("Chats Overview:", sdkResponse.Data)
+} else {
+    log.Printf("Failed to get chats overview: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+var options = new GetChatsOverviewOptions
+{
+    Limit = 10,
+    Ids = new List<string> { "1234567890@c.us", "another_chat_id@c.us" }
+};
+var overviewResponse = await client.GetChatsOverviewAsync(sessionId, options); // Adjust method signature as per actual .NET SDK
+if (overviewResponse.Success && overviewResponse.Data != null)
+{
+    Console.WriteLine($"Chats Overview count: {overviewResponse.Data.Count}");
+}
+else
+{
+    Console.WriteLine($"Failed to get chats overview: {overviewResponse.Error}");
+}
+```
+
+### Read Messages in a Chat
+
+Marks messages in a specific chat as read. You can specify the number of latest messages or a number of days.
+
+**TypeScript**
+
+```go
+const chatId = "recipient_or_group_jid@c.us"; // or "group_id@g.us"
+const readResponse = await client.readMessages(sessionId, chatId, { messages: 5 }); // Mark last 5 messages as read
+if (readResponse.success) {
+    console.log(readResponse.message || 'Successfully marked messages as read.');
+} else {
+    console.error('Failed to mark messages as read:', readResponse.message);
+}
+```
+
+**Python**
+
+```python
+chat_id = "recipient_or_group_jid@c.us"
+try:
+    read_response = client.read_messages(
+        session=sessionId,
+        chat_id=chat_id,
+        messages=5  # Mark last 5 messages as read
+        # or days=2 for messages from last 2 days
+    )
+    # read_messages is expected to return an object with 'success' and 'message' attributes
+    if hasattr(read_response, 'success') and read_response.success:
+        print(read_response.message or 'Successfully marked messages as read.')
+    elif hasattr(read_response, 'message'):
+        print(f"Failed to mark messages as read: {read_response.message}")
+    else:
+        print(f"Operation status unknown or failed: {read_response}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+chatId := "recipient_or_group_jid@c.us"
+options := &wasend.ReadMessagesOptions{
+    Messages: 5, // Mark last 5 messages as read
+    // Days: 2, // Or mark messages from last 2 days
+}
+// readMessages returns a specific response type (ReadChatMessagesResponse in TS)
+readResponse, err := client.ReadMessages(sessionId, chatId, options) // Adjust method signature
+if err != nil {
+    log.Fatalf("Error calling ReadMessages: %v", err)
+}
+if readResponse.Success {
+    fmt.Println(readResponse.Message) // Message field from ReadChatMessagesResponse
+} else {
+    log.Printf("Failed to mark messages as read: %s", readResponse.Message)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+string chatId = "recipient_or_group_jid@c.us";
+var options = new ReadMessagesOptions { Messages = 5 }; // Mark last 5 messages as read
+// var options = new ReadMessagesOptions { Days = 2 }; // Or mark messages from last 2 days
+var readResponse = await client.ReadMessagesAsync(sessionId, chatId, options); // Adjust method signature
+if (readResponse.Success)
+{
+    Console.WriteLine(readResponse.Message ?? "Successfully marked messages as read.");
+}
+else
+{
+    Console.WriteLine($"Failed to mark messages as read: {read_response.Message}");
+}
+```
+
+### Get Messages from a Chat
+
+Retrieves messages from a chat, with options for pagination, media download, and filtering.
+
+**TypeScript**
+
+```go
+const chatId = "recipient_or_group_jid@c.us";
+const messagesResponse = await client.getMessages(sessionId, chatId, {
+    limit: 10, // Required: number of messages to retrieve
+    downloadMedia: true,
+    filter: {
+        timestampGte: Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000), // Messages from last 24 hours
+        fromMe: true, // Only messages sent by you
+    },
+});
+if (messagesResponse.success && messagesResponse.data) {
+    console.log('Messages:', messagesResponse.data);
+} else {
+    console.error('Failed to get messages:', messagesResponse.error);
+}
+```
+
+**Python**
+
+```python
+import time
+chat_id = "recipient_or_group_jid@c.us"
+try:
+    messages_response = client.get_messages(
+        session=sessionId,
+        chat_id=chat_id,
+        limit=10,  # Required
+        download_media=True,
+        filter={
+            'timestamp_gte': int(time.time()) - (24 * 60 * 60), # Last 24 hours
+            'from_me': True
+        }
+    )
+    if hasattr(messages_response, 'success') and messages_response.success and hasattr(messages_response, 'data'):
+        print(f"Messages: {messages_response.data}")
+    elif hasattr(messages_response, 'error'):
+        print(f"Failed to get messages: {messages_response.error}")
+    else:
+        print(f"Messages: {messages_response}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+import "time"
+chatId := "recipient_or_group_jid@c.us"
+options := &wasend.GetMessagesOptions{
+    Limit:         10, // Required
+    DownloadMedia: true,
+    Filter: &wasend.GetMessagesFilterOptions{
+        TimestampGte: time.Now().Add(-24 * time.Hour).Unix(), // Last 24 hours
+        FromMe:       true,
+    },
+}
+sdkResponse, err := client.GetMessages(sessionId, chatId, options) // Adjust method signature
+if err != nil {
+    log.Fatalf("Error calling GetMessages: %v", err)
+}
+if sdkResponse.Success {
+    fmt.Println("Messages:", sdkResponse.Data)
+} else {
+    log.Printf("Failed to get messages: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+string chatId = "recipient_or_group_jid@c.us";
+var options = new GetMessagesOptions
+{
+    Limit = 10, // Required
+    DownloadMedia = true,
+    Filter = new GetMessagesFilterOptions
+    {
+        TimestampGte = DateTimeOffset.UtcNow.AddHours(-24).ToUnixTimeSeconds(), // Last 24 hours
+        FromMe = true
+    }
+};
+var messagesResponse = await client.GetMessagesAsync(sessionId, chatId, options); // Adjust method signature
+if (messagesResponse.Success && messagesResponse.Data != null)
+{
+    Console.WriteLine($"Messages count: {messagesResponse.Data.Count}");
+}
+else
+{
+    Console.WriteLine($"Failed to get messages: {messagesResponse.Error}");
+}
+```
+
+### Get Chat Picture
+
+Retrieves the profile picture of a chat (user or group).
+
+**TypeScript**
+
+```go
+const chatId = "recipient_or_group_jid@c.us";
+const chatPictureResponse = await client.getChatPicture(sessionId, chatId, { refresh: true });
+if (chatPictureResponse.success && chatPictureResponse.data) {
+    console.log('Chat Picture URL:', chatPictureResponse.data.url);
+} else {
+    console.error('Failed to get chat picture:', chatPictureResponse.error);
+}
+```
+
+**Python**
+
+```python
+chat_id = "recipient_or_group_jid@c.us"
+try:
+    chat_picture_response = client.get_chat_picture(
+        session=sessionId,
+        chat_id=chat_id,
+        refresh=True
+    )
+    # Assuming data is an object/dict with a 'url' attribute/key
+    if hasattr(chat_picture_response, 'success') and chat_picture_response.success and hasattr(chat_picture_response, 'data'):
+        picture_data = chat_picture_response.data
+        url = getattr(picture_data, 'url', None) if hasattr(picture_data, 'url') else picture_data.get('url') if isinstance(picture_data, dict) else None
+        print(f"Chat Picture URL: {url}")
+    elif hasattr(chat_picture_response, 'error'):
+        print(f"Failed to get chat picture: {chat_picture_response.error}")
+    else:
+        print(f"Chat picture response: {chat_picture_response}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+chatId := "recipient_or_group_jid@c.us"
+options := &wasend.GetChatPictureOptions{
+    Refresh: true,
+}
+// getChatPicture returns SdkResponse where Data is ChatPictureResponse (with URL)
+sdkResponse, err := client.GetChatPicture(sessionId, chatId, options) // Adjust method signature
+if err != nil {
+    log.Fatalf("Error calling GetChatPicture: %v", err)
+}
+if sdkResponse.Success {
+    // Assuming sdkResponse.Data can be asserted to a struct with a Url field
+    // chatPicData, ok := sdkResponse.Data.(wasend.ChatPictureResponse)
+    // if ok { fmt.Println("Chat Picture URL:", chatPicData.Url) }
+    fmt.Println("Chat Picture data:", sdkResponse.Data) // Print the raw data for inspection
+} else {
+    log.Printf("Failed to get chat picture: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+string chatId = "recipient_or_group_jid@c.us";
+var options = new GetChatPictureOptions { Refresh = true };
+var chatPictureResponse = await client.GetChatPictureAsync(sessionId, chatId, options); // Adjust method signature
+if (chatPictureResponse.Success && chatPictureResponse.Data != null)
+{
+    Console.WriteLine($"Chat Picture URL: {chatPictureResponse.Data.Url}");
+}
+else
+{
+    Console.WriteLine($"Failed to get chat picture: {chatPictureResponse.Error}");
+}
+```
+
+### Get Message By ID
+
+Retrieves a specific message by its ID from a given chat.
+
+**TypeScript**
+
+```go
+const chatId = "recipient_or_group_jid@c.us";
+const messageId = "specific_message_id";
+const messageResponse = await client.getMessageById(sessionId, chatId, messageId, { downloadMedia: true });
+if (messageResponse.success && messageResponse.data) {
+    console.log('Message:', messageResponse.data);
+} else {
+    console.error('Failed to get message by ID:', messageResponse.error);
+}
+```
+
+**Python**
+
+```python
+chat_id = "recipient_or_group_jid@c.us"
+message_id = "specific_message_id"
+try:
+    message_response = client.get_message_by_id(
+        session=sessionId,
+        chat_id=chat_id,
+        message_id=message_id,
+        download_media=True
+    )
+    if hasattr(message_response, 'success') and message_response.success and hasattr(message_response, 'data'):
+        print(f"Message: {message_response.data}")
+    elif hasattr(message_response, 'error'):
+        print(f"Failed to get message by ID: {message_response.error}")
+    else:
+        print(f"Message response: {message_response}")
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+**Go**
+
+```go
+chatId := "recipient_or_group_jid@c.us"
+messageId := "specific_message_id"
+options := &wasend.GetMessageByIdOptions{
+    DownloadMedia: true,
+}
+// getMessageById returns SdkResponse where Data is WAMessage
+sdkResponse, err := client.GetMessageById(sessionId, chatId, messageId, options) // Adjust method signature
+if err != nil {
+    log.Fatalf("Error calling GetMessageById: %v", err)
+}
+if sdkResponse.Success {
+    fmt.Println("Message:", sdkResponse.Data)
+} else {
+    log.Printf("Failed to get message by ID: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+string chatId = "recipient_or_group_jid@c.us";
+string messageId = "specific_message_id";
+var options = new GetMessageByIdOptions { DownloadMedia = true };
+var messageResponse = await client.GetMessageByIdAsync(sessionId, chatId, messageId, options); // Adjust method signature
+if (messageResponse.Success && messageResponse.Data != null)
+{
+    Console.WriteLine($"Message ID: {messageResponse.Data.Id}, Text: {messageResponse.Data.Text}"); // Example properties
+}
+else
+{
+    Console.WriteLine($"Failed to get message by ID: {messageResponse.Error}");
+}
+```
+
 ## Best Practices
 
-1. Always store the `sessionId` after creating a session
-2. Implement proper error handling
-3. Use environment variables for API keys
-4. Enable account protection for production sessions
-5. Implement webhook handling for real-time updates
-6. Regularly check session status
-7. Clean up unused sessions
-
-## Support
-
-For support, please contact:
-
-* Email: admin@wasend.dev
-* Website: https://wasend.dev
-* Documentation: https://docs.wasend.dev
-
-## License
-
-This SDK is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file for details.
-
-For more detailed API information, please refer to the [API.md](API.md) file.
+1. Always store the `sessionId` securely after creating a session.
+2. Implement robust error handling for all API calls. Always check the `success` field in the response and handle the `error` field appropriately.
+3. Use environment variables or a secure configuration management system for your API key and other sensitive credentials. Do not hardcode them in your application.
+4. Enable account protection features when creating sessions, especially for production environments, to enhance security.
+5. If your application requires real-time updates (e.g., for incoming messages, session status changes), implement webhook handling. Ensure your webhook endpoint is secure and can process notifications efficiently.
+6. Regularly monitor the status of your WhatsApp sessions using `retrieveSessionInfo` (or `getSessionInfo`) and implement logic to handle disconnections or errors (e.g., by attempting to restart the session or notifying an administrator).
+7. Periodically clean up unused or old sessions using `deleteSession` to manage resources effectively and avoid hitting account limits.
+8. Utilize pagination parameters (e.g., `limit`, `offset`) when retrieving lists of chats (`getAllChats`, `getChatsOverview`) or messages (`getMessages`). This helps manage data flow, improves performance, and prevents timeouts when dealing with large datasets.
+9. Be mindful of the `downloadMedia` option when fetching messages (`getMessages`, `getMessageById`). Enabling it can significantly increase response size and processing time. Use it selectively only when the media content is immediately required by your application.
+10. When polling for new messages or updates, use appropriate filters (e.g., `timestampGte` in `getMessages` options) to fetch only new or relevant data. This reduces redundant data transfer and processing on your end.
+11. Consider implementing a caching layer in your application for frequently accessed but less volatile data, such as chat overviews or profile pictures. Use cache invalidation strategies (e.g., time-based expiry or using the `refresh` option where available, like in `getChatPicture`) to ensure data freshness.
+12. For marking messages as read using `readMessages`, choose the most suitable option (`messages` count or `days`) based on your application's specific requirements for managing unread states.
+13. When using utility methods like `processMessage` that introduce deliberate delays (for simulating human-like typing), ensure your application handles these asynchronous operations gracefully, without blocking critical execution paths or user interface responsiveness.
