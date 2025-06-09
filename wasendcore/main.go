@@ -179,6 +179,10 @@ func init() {
 		reflect.TypeOf((*MessageLinkCustomPreviewRequest)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
+		"@wasend/core.MessageReactionRequest",
+		reflect.TypeOf((*MessageReactionRequest)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
 		"@wasend/core.MessageRequest",
 		reflect.TypeOf((*MessageRequest)(nil)).Elem(),
 	)
@@ -329,6 +333,7 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "sendImage", GoMethod: "SendImage"},
 			_jsii_.MemberMethod{JsiiMethod: "sendLinkCustomPreview", GoMethod: "SendLinkCustomPreview"},
 			_jsii_.MemberMethod{JsiiMethod: "sendMessage", GoMethod: "SendMessage"},
+			_jsii_.MemberMethod{JsiiMethod: "sendReaction", GoMethod: "SendReaction"},
 			_jsii_.MemberMethod{JsiiMethod: "sendSeen", GoMethod: "SendSeen"},
 			_jsii_.MemberMethod{JsiiMethod: "sendText", GoMethod: "SendText"},
 			_jsii_.MemberMethod{JsiiMethod: "sendVideo", GoMethod: "SendVideo"},

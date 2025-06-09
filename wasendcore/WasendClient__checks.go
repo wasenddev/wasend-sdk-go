@@ -523,6 +523,17 @@ func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *MessageR
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateSendReactionParameters(request *MessageReactionRequest) error {
+	if request == nil {
+		return fmt.Errorf("parameter request is required, but nil was provided")
+	}
+	if err := _jsii_.ValidateStruct(request, func() string { return "parameter request" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateSendSeenParameters(request *SendSeenRequest) error {
 	if request == nil {
 		return fmt.Errorf("parameter request is required, but nil was provided")

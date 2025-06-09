@@ -534,6 +534,21 @@ type WasendClient interface {
 	//
 	// Returns: Promise resolving to the API response.
 	SendMessage(request *MessageRequest) *SdkResponse
+	// React to a message with an emoji.
+	//
+	// Returns: Promise resolving to the API response.
+	//
+	// Example:
+	//   curl -X PUT 'http://localhost:3001/reaction' \
+	//     -H 'Authorization: Bearer {apiKey}' \
+	//     -H 'Content-Type: application/json' \
+	//     -d '{
+	//       "messageId": "false_11111111111@c.us_AAAAAAAAAAAAAAAAAAAA",
+	//       "reaction": "👍",
+	//       "session": "sessionId"
+	//     }'
+	//
+	SendReaction(request *MessageReactionRequest) *SdkResponse
 	// Mark a message as seen.
 	//
 	// Example:
@@ -1350,6 +1365,22 @@ func (w *jsiiProxy_WasendClient) SendMessage(request *MessageRequest) *SdkRespon
 	_jsii_.Invoke(
 		w,
 		"sendMessage",
+		[]interface{}{request},
+		&returns,
+	)
+
+	return returns
+}
+
+func (w *jsiiProxy_WasendClient) SendReaction(request *MessageReactionRequest) *SdkResponse {
+	if err := w.validateSendReactionParameters(request); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"sendReaction",
 		[]interface{}{request},
 		&returns,
 	)

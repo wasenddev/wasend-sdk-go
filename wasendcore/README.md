@@ -245,7 +245,7 @@ public class WasendExample
 ### Creating a Session
 
 ```go
-const session = await client.sessions.createSession({
+const session = await client.createSession({
     sessionName: 'my-whatsapp-session',
     phoneNumber: '+919876543210',
     enableAccountProtection: true,
@@ -253,6 +253,7 @@ const session = await client.sessions.createSession({
     enableWebhook: true,
     webhookUrl: 'https://your-webhook-url.com/callback'
 });
+console.log('Session created:', session.uniqueSessionId);
 ```
 
 ### Session Configuration Options
@@ -267,23 +268,36 @@ const session = await client.sessions.createSession({
 ### Managing Sessions
 
 ```go
-// Get all sessions
-const allSessions = await client.sessions.getAllSessions();
+// Assume 'sessionId' is available from a created session, e.g., const sessionId = session.uniqueSessionId;
 
-// Get specific session info
-const sessionInfo = await client.sessions.getSessionInfo(sessionId);
+// Retrieve all sessions
+const allSessionsResponse = await client.retrieveAllSessions();
+console.log('All sessions count:', allSessionsResponse.sessions.length);
+allSessionsResponse.sessions.forEach(s => console.log(`- Session ID: ${s.uniqueSessionId}, Status: ${s.status}`));
+
+// Retrieve specific session info
+const specificSessionInfo = await client.retrieveSessionInfo(sessionId);
+console.log('Specific session info:', specificSessionInfo.status, specificSessionInfo.phoneNumber);
+
+// Retrieve QR code for authentication (typically for a newly created session)
+const qrCodeResponse = await client.retrieveQRCode(sessionId);
+console.log('QR Code data (e.g., to display as image or in console):', qrCodeResponse.data);
 
 // Start a session
-await client.sessions.startSession(sessionId);
+const startedSession = await client.startSession(sessionId);
+console.log(`Session ${startedSession.uniqueSessionId} status after start:`, startedSession.status);
 
 // Stop a session
-await client.sessions.stopSession(sessionId);
+const stoppedSession = await client.stopSession(sessionId);
+console.log(`Session ${stoppedSession.uniqueSessionId} status after stop:`, stoppedSession.status);
 
 // Restart a session
-await client.sessions.restartSession(sessionId);
+const restartedSession = await client.restartSession(sessionId);
+console.log(`Session ${restartedSession.uniqueSessionId} status after restart:`, restartedSession.status);
 
 // Delete a session
-await client.sessions.deleteSession(sessionId);
+await client.deleteSession(sessionId);
+console.log(`Session ${sessionId} has been deleted.`);
 ```
 
 ## Group Management
@@ -611,6 +625,108 @@ const seenRequest = {
 };
 await client.sendSeen(sessionId, seenRequest);
 console.log('Message marked as seen.');
+```
+
+### React to a Message
+
+You can react to a specific message with an emoji. To remove a reaction, send an empty string as the reaction.
+
+**TypeScript**
+
+```go
+const reactionRequest: MessageReactionRequest = {
+    sessionId: "your_session_id", // or client.config.session if applicable, ensure session is part of request if needed by API
+    messageId: "false_11111111111@c.us_AAAAAAAAAAAAAAAAAAAA",
+    reaction: "👍" // Send "" (empty string) to remove reaction
+};
+const reactionResponse = await client.sendReaction(reactionRequest);
+if (reactionResponse.success) {
+    console.log('Reaction set/removed successfully.');
+} else {
+    console.error('Failed to set reaction:', reactionResponse.error);
+}
+```
+
+**Python**
+
+```python
+# Ensure client is initialized
+# Assume sessionId and messageId are defined
+reaction_request = {
+    "session": sessionId, # Or provide your session identifier
+    "message_id": messageId,
+    "reaction": "👍"  # Use "" to remove reaction
+}
+try:
+    # Assuming the Python SDK has a set_reaction method
+    # and it either takes a dictionary or keyword arguments.
+    # For this example, we'll assume it takes keyword arguments or a dict that maps to them.
+    # response = client.set_reaction(session=sessionId, message_id=messageId, reaction="👍")
+    # Or if it expects a single request object (more likely if following TS structure):
+    # response = client.set_reaction(reaction_request)
+
+    # Let's refine based on the TS SdkResponse structure:
+    # We need to assume the Python client method name (e.g., set_reaction)
+    # and how it returns success/error.
+    # This is a hypothetical adaptation:
+    response = client.set_reaction(reaction_request) # Assuming client.set_reaction exists and takes a dict
+
+    if hasattr(response, 'success') and response.success:
+        print('Reaction set/removed successfully.')
+    elif hasattr(response, 'error'):
+        print(f'Failed to set reaction: {response.error}')
+    else:
+        # Fallback if the response structure is different (e.g., direct True/False or raises Exception)
+        print('Reaction operation completed, or response structure unknown.')
+except Exception as e:
+    print(f"An error occurred while setting reaction: {e}")
+```
+
+**Go**
+
+```go
+// Assume client, sessionId, and messageId are initialized
+reactionRequest := &wasend.MessageReactionRequest{ // Assuming MessageReactionRequest struct exists in Go SDK
+    Session:   sessionId,
+    MessageID: messageId,
+    Reaction:  "👍", // Use "" to remove reaction
+}
+
+// Assuming the Go SDK has a SetReaction method
+sdkResponse, err := client.SetReaction(reactionRequest) // Adjust if method signature is different
+if err != nil {
+    log.Fatalf("Error calling SetReaction: %v", err)
+}
+
+if sdkResponse.Success { // Assuming SdkResponse struct with Success and Error fields
+    fmt.Println("Reaction set/removed successfully.")
+} else {
+    log.Printf("Failed to set reaction: %s", sdkResponse.Error)
+}
+```
+
+**C# (.NET)**
+
+```csharp
+// Assume client, sessionId, and messageId are initialized
+var reactionRequest = new MessageReactionRequest // Assuming MessageReactionRequest class exists in .NET SDK
+{
+    Session = sessionId,
+    MessageId = messageId,
+    Reaction = "👍" // Use "" to remove reaction
+};
+
+// Assuming the .NET SDK has a SetReactionAsync method
+var reactionResponse = await client.SetReactionAsync(reactionRequest); // Adjust if method signature is different
+
+if (reactionResponse.Success)
+{
+    Console.WriteLine("Reaction set/removed successfully.");
+}
+else
+{
+    Console.WriteLine($"Failed to set reaction: {reactionResponse.Error}");
+}
 ```
 
 ## Chat Management

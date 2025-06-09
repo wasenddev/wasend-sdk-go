@@ -164,6 +164,10 @@ func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *MessageR
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateSendReactionParameters(request *MessageReactionRequest) error {
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateSendSeenParameters(request *SendSeenRequest) error {
 	return nil
 }
