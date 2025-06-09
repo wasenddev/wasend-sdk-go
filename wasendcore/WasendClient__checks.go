@@ -107,6 +107,46 @@ func (w *jsiiProxy_WasendClient) validateDemoteGroupParticipantsParameters(sessi
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateGetAllChatsParameters(session *string, options *GetChatsOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetChatPictureParameters(session *string, chatId *string, options *GetChatPictureOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if chatId == nil {
+		return fmt.Errorf("parameter chatId is required, but nil was provided")
+	}
+
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetChatsOverviewParameters(session *string, options *GetChatsOverviewOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateGetContactParameters(sessionId *string, params *GetContactQueryParams) error {
 	if sessionId == nil {
 		return fmt.Errorf("parameter sessionId is required, but nil was provided")
@@ -261,6 +301,45 @@ func (w *jsiiProxy_WasendClient) validateGetMessageParameters(messageId *string)
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateGetMessageByIdParameters(session *string, chatId *string, messageId *string, options *GetMessageByIdOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if chatId == nil {
+		return fmt.Errorf("parameter chatId is required, but nil was provided")
+	}
+
+	if messageId == nil {
+		return fmt.Errorf("parameter messageId is required, but nil was provided")
+	}
+
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetMessagesParameters(session *string, chatId *string, options *GetMessagesOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if chatId == nil {
+		return fmt.Errorf("parameter chatId is required, but nil was provided")
+	}
+
+	if options == nil {
+		return fmt.Errorf("parameter options is required, but nil was provided")
+	}
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateJoinGroupParameters(sessionId *string, request *JoinGroupRequest) error {
 	if sessionId == nil {
 		return fmt.Errorf("parameter sessionId is required, but nil was provided")
@@ -312,6 +391,22 @@ func (w *jsiiProxy_WasendClient) validatePromoteGroupParticipantsParameters(sess
 		return fmt.Errorf("parameter request is required, but nil was provided")
 	}
 	if err := _jsii_.ValidateStruct(request, func() string { return "parameter request" }); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateReadMessagesParameters(session *string, chatId *string, options *ReadMessagesOptions) error {
+	if session == nil {
+		return fmt.Errorf("parameter session is required, but nil was provided")
+	}
+
+	if chatId == nil {
+		return fmt.Errorf("parameter chatId is required, but nil was provided")
+	}
+
+	if err := _jsii_.ValidateStruct(options, func() string { return "parameter options" }); err != nil {
 		return err
 	}
 

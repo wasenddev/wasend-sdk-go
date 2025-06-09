@@ -2,7 +2,7 @@ package wasendcore
 
 
 // Response from API calls.
-type ApiResponse struct {
+type SdkResponse struct {
 	// Whether the request was successful.
 	Success *bool `field:"required" json:"success" yaml:"success"`
 	// The response data (if successful).

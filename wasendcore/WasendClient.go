@@ -78,6 +78,63 @@ type WasendClient interface {
 	//     }'
 	//
 	DemoteGroupParticipants(sessionId *string, groupId *string, request *ParticipantsRequest)
+	// Retrieves all chats for a given session.
+	//
+	// Returns: A promise that resolves to an SdkResponse object. If successful, `data` contains an array of Chat objects. If failed, `error` contains the error message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const result = await client.getAllChats('my-session', { limit: 10, sortBy: 'timestamp', sortOrder: 'desc' });
+	//   if (result.success && result.data) {
+	//     console.log('Chats:', result.data);
+	//   } else {
+	//     console.error('Failed to get chats:', result.error);
+	//   }
+	//
+	GetAllChats(session *string, options *GetChatsOptions) *SdkResponse
+	// Retrieves the profile picture of a chat (user or group).
+	//
+	// Returns: A promise that resolves to an SdkResponse object. If successful, `data` contains a `ChatPictureResponse` object. If failed, `error` contains the error message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const session = 'my-session';
+	//   const chatId = '1234567890@c.us';
+	//
+	//   const result = await client.getChatPicture(session, chatId);
+	//   if (result.success && result.data) {
+	//     if (result.data.url) {
+	//       console.log('Chat picture URL:', result.data.url);
+	//     } else {
+	//       console.log('Chat does not have a picture or it could not be retrieved.');
+	//     }
+	//
+	//     // Force refresh
+	//     const refreshedResult = await client.getChatPicture(session, chatId, { refresh: true });
+	//     if (refreshedResult.success && refreshedResult.data) {
+	//        console.log('Refreshed picture URL:', refreshedResult.data.url);
+	//     } else {
+	//        console.error('Failed to refresh chat picture:', refreshedResult.error);
+	//     }
+	//   } else {
+	//     console.error('Failed to get chat picture:', result.error);
+	//   }
+	//
+	GetChatPicture(session *string, chatId *string, options *GetChatPictureOptions) *SdkResponse
+	// Retrieves an overview of chats for a given session, allowing pagination and filtering by chat IDs.
+	//
+	// Returns: A promise that resolves to an SdkResponse object. If successful, `data` contains an array of ChatOverview objects. If failed, `error` contains the error message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const result = await client.getChatsOverview('my-session', { limit: 10, ids: ['1234567890@c.us'] });
+	//   if (result.success && result.data) {
+	//     console.log(result.data);
+	//   } else {
+	//     console.error('Failed to get chats overview:', result.error);
+	//   }
+	//
+	GetChatsOverview(session *string, options *GetChatsOverviewOptions) *SdkResponse
 	// Get contact basic info.
 	//
 	// Returns: Promise resolving to the contact information.
@@ -189,7 +246,70 @@ type WasendClient interface {
 	// Get message by ID.
 	//
 	// Returns: Promise resolving to the API response.
-	GetMessage(messageId *string) *ApiResponse
+	GetMessage(messageId *string) *SdkResponse
+	// Retrieves a specific message by its ID from a given chat.
+	//
+	// Returns: A promise that resolves to an SdkResponse object. If successful, `data` contains the `WAMessage` object. If failed, `error` contains the error message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const session = 'my-session';
+	//   const chatId = '1234567890@c.us';
+	//   const messageId = 'messageId123';
+	//
+	//   const result = await client.getMessageById(session, chatId, messageId);
+	//   if (result.success && result.data) {
+	//     console.log('Retrieved message:', result.data);
+	//
+	//     // Retrieve message and attempt to include media
+	//     const mediaResult = await client.getMessageById(session, chatId, messageId, { downloadMedia: true });
+	//     if (mediaResult.success && mediaResult.data) {
+	//        console.log('Message with media (if any):', mediaResult.data);
+	//     } else {
+	//        console.error('Failed to get message with media:', mediaResult.error);
+	//     }
+	//   } else {
+	//     console.error('Failed to get message by ID:', result.error);
+	//   }
+	//
+	GetMessageById(session *string, chatId *string, messageId *string, options *GetMessageByIdOptions) *SdkResponse
+	// Get messages from a chat.
+	//
+	// This method retrieves a list of messages from a specified chat, allowing for pagination,
+	// media download preferences, and filtering based on various criteria.
+	//
+	// Returns: A promise that resolves to an SdkResponse object. If successful, `data` contains an array of WAMessage objects. If failed, `error` contains the error message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const session = 'my-session';
+	//   const chatId = '1234567890@c.us';
+	//
+	//   // Get the last 10 messages
+	//   const result = await client.getMessages(session, chatId, { limit: 10 });
+	//   if (result.success && result.data) {
+	//     console.log('Last 10 messages:', result.data);
+	//
+	//     // Get messages from the last 24 hours, with media, sent by me
+	//     const twentyFourHoursAgo = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000);
+	//     const myMessagesResult = await client.getMessages(session, chatId, {
+	//       limit: 50, // Max 50
+	//       downloadMedia: true,
+	//       filter: {
+	//         timestampGte: twentyFourHoursAgo,
+	//         fromMe: true,
+	//       },
+	//     });
+	//     if (myMessagesResult.success && myMessagesResult.data) {
+	//        console.log('My messages from last 24h with media:', myMessagesResult.data);
+	//     } else {
+	//        console.error('Failed to get my messages:', myMessagesResult.error);
+	//     }
+	//   } else {
+	//    console.error('Failed to get messages:', result.error);
+	//   }
+	//
+	GetMessages(session *string, chatId *string, options *GetMessagesOptions) *SdkResponse
 	// Join a group.
 	//
 	// Returns: Promise resolving to the join group response.
@@ -243,6 +363,39 @@ type WasendClient interface {
 	//     }'
 	//
 	PromoteGroupParticipants(sessionId *string, groupId *string, request *ParticipantsRequest)
+	// Marks messages in a specific chat as read.
+	//
+	// This can be done by specifying the number of
+	// latest messages to mark as read, or by specifying a number of days to mark messages from.
+	//
+	// If the API request fails due to network issues or server-side errors, this method will
+	// return a `ReadChatMessagesResponse` object with `success: false` and an error message.
+	//
+	// Returns: A promise that resolves to a `ReadChatMessagesResponse` object indicating the success or failure
+	// of the operation, along with an optional descriptive message.
+	//
+	// Example:
+	//   const client = new WasendClient({ apiKey: 'your-api-key' });
+	//   const session = 'my-session';
+	//   const chatId = '1234567890@c.us';
+	//
+	//   // Mark the last 5 messages as read
+	//   const response1 = await client.readMessages(session, chatId, { messages: 5 });
+	//   if (response1.success) {
+	//     console.log(response1.message || 'Successfully marked 5 messages as read.');
+	//   } else {
+	//     console.error('Failed to mark messages as read:', response1.message);
+	//   }
+	//
+	//   // Mark messages from the last 2 days as read
+	//   const response2 = await client.readMessages(session, chatId, { days: 2 });
+	//   if (response2.success) {
+	//     console.log(response2.message || 'Successfully marked messages from last 2 days as read.');
+	//   } else {
+	//     console.error('Failed to mark messages as read:', response2.message);
+	//   }
+	//
+	ReadMessages(session *string, chatId *string, options *ReadMessagesOptions) *ReadChatMessagesResponse
 	// Remove participants from group.
 	//
 	// Example:
@@ -259,7 +412,7 @@ type WasendClient interface {
 	// Get account information.
 	//
 	// Returns: Promise resolving to the API response.
-	RetrieveAccount() *ApiResponse
+	RetrieveAccount() *SdkResponse
 	RetrieveAllSessions() *GetAllSessionsResponse
 	// Get the current configuration.
 	//
@@ -380,7 +533,7 @@ type WasendClient interface {
 	// Send a message to a recipient.
 	//
 	// Returns: Promise resolving to the API response.
-	SendMessage(request *MessageRequest) *ApiResponse
+	SendMessage(request *MessageRequest) *SdkResponse
 	// Mark a message as seen.
 	//
 	// Example:
@@ -652,6 +805,54 @@ func (w *jsiiProxy_WasendClient) DemoteGroupParticipants(sessionId *string, grou
 	)
 }
 
+func (w *jsiiProxy_WasendClient) GetAllChats(session *string, options *GetChatsOptions) *SdkResponse {
+	if err := w.validateGetAllChatsParameters(session, options); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"getAllChats",
+		[]interface{}{session, options},
+		&returns,
+	)
+
+	return returns
+}
+
+func (w *jsiiProxy_WasendClient) GetChatPicture(session *string, chatId *string, options *GetChatPictureOptions) *SdkResponse {
+	if err := w.validateGetChatPictureParameters(session, chatId, options); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"getChatPicture",
+		[]interface{}{session, chatId, options},
+		&returns,
+	)
+
+	return returns
+}
+
+func (w *jsiiProxy_WasendClient) GetChatsOverview(session *string, options *GetChatsOverviewOptions) *SdkResponse {
+	if err := w.validateGetChatsOverviewParameters(session, options); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"getChatsOverview",
+		[]interface{}{session, options},
+		&returns,
+	)
+
+	return returns
+}
+
 func (w *jsiiProxy_WasendClient) GetContact(sessionId *string, params *GetContactQueryParams) *Contact {
 	if err := w.validateGetContactParameters(sessionId, params); err != nil {
 		panic(err)
@@ -844,16 +1045,48 @@ func (w *jsiiProxy_WasendClient) GetGroupsCount(sessionId *string) *CountRespons
 	return returns
 }
 
-func (w *jsiiProxy_WasendClient) GetMessage(messageId *string) *ApiResponse {
+func (w *jsiiProxy_WasendClient) GetMessage(messageId *string) *SdkResponse {
 	if err := w.validateGetMessageParameters(messageId); err != nil {
 		panic(err)
 	}
-	var returns *ApiResponse
+	var returns *SdkResponse
 
 	_jsii_.Invoke(
 		w,
 		"getMessage",
 		[]interface{}{messageId},
+		&returns,
+	)
+
+	return returns
+}
+
+func (w *jsiiProxy_WasendClient) GetMessageById(session *string, chatId *string, messageId *string, options *GetMessageByIdOptions) *SdkResponse {
+	if err := w.validateGetMessageByIdParameters(session, chatId, messageId, options); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"getMessageById",
+		[]interface{}{session, chatId, messageId, options},
+		&returns,
+	)
+
+	return returns
+}
+
+func (w *jsiiProxy_WasendClient) GetMessages(session *string, chatId *string, options *GetMessagesOptions) *SdkResponse {
+	if err := w.validateGetMessagesParameters(session, chatId, options); err != nil {
+		panic(err)
+	}
+	var returns *SdkResponse
+
+	_jsii_.Invoke(
+		w,
+		"getMessages",
+		[]interface{}{session, chatId, options},
 		&returns,
 	)
 
@@ -914,6 +1147,22 @@ func (w *jsiiProxy_WasendClient) PromoteGroupParticipants(sessionId *string, gro
 	)
 }
 
+func (w *jsiiProxy_WasendClient) ReadMessages(session *string, chatId *string, options *ReadMessagesOptions) *ReadChatMessagesResponse {
+	if err := w.validateReadMessagesParameters(session, chatId, options); err != nil {
+		panic(err)
+	}
+	var returns *ReadChatMessagesResponse
+
+	_jsii_.Invoke(
+		w,
+		"readMessages",
+		[]interface{}{session, chatId, options},
+		&returns,
+	)
+
+	return returns
+}
+
 func (w *jsiiProxy_WasendClient) RemoveGroupParticipants(sessionId *string, groupId *string, request *ParticipantsRequest) {
 	if err := w.validateRemoveGroupParticipantsParameters(sessionId, groupId, request); err != nil {
 		panic(err)
@@ -941,8 +1190,8 @@ func (w *jsiiProxy_WasendClient) RestartSession(sessionId *string) *Session {
 	return returns
 }
 
-func (w *jsiiProxy_WasendClient) RetrieveAccount() *ApiResponse {
-	var returns *ApiResponse
+func (w *jsiiProxy_WasendClient) RetrieveAccount() *SdkResponse {
+	var returns *SdkResponse
 
 	_jsii_.Invoke(
 		w,
@@ -1092,11 +1341,11 @@ func (w *jsiiProxy_WasendClient) SendLinkCustomPreview(request *MessageLinkCusto
 	return returns
 }
 
-func (w *jsiiProxy_WasendClient) SendMessage(request *MessageRequest) *ApiResponse {
+func (w *jsiiProxy_WasendClient) SendMessage(request *MessageRequest) *SdkResponse {
 	if err := w.validateSendMessageParameters(request); err != nil {
 		panic(err)
 	}
-	var returns *ApiResponse
+	var returns *SdkResponse
 
 	_jsii_.Invoke(
 		w,

@@ -32,6 +32,18 @@ func (w *jsiiProxy_WasendClient) validateDemoteGroupParticipantsParameters(sessi
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateGetAllChatsParameters(session *string, options *GetChatsOptions) error {
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetChatPictureParameters(session *string, chatId *string, options *GetChatPictureOptions) error {
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetChatsOverviewParameters(session *string, options *GetChatsOverviewOptions) error {
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateGetContactParameters(sessionId *string, params *GetContactQueryParams) error {
 	return nil
 }
@@ -84,6 +96,14 @@ func (w *jsiiProxy_WasendClient) validateGetMessageParameters(messageId *string)
 	return nil
 }
 
+func (w *jsiiProxy_WasendClient) validateGetMessageByIdParameters(session *string, chatId *string, messageId *string, options *GetMessageByIdOptions) error {
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateGetMessagesParameters(session *string, chatId *string, options *GetMessagesOptions) error {
+	return nil
+}
+
 func (w *jsiiProxy_WasendClient) validateJoinGroupParameters(sessionId *string, request *JoinGroupRequest) error {
 	return nil
 }
@@ -97,6 +117,10 @@ func (w *jsiiProxy_WasendClient) validateProcessMessageParameters(request *SendR
 }
 
 func (w *jsiiProxy_WasendClient) validatePromoteGroupParticipantsParameters(sessionId *string, groupId *string, request *ParticipantsRequest) error {
+	return nil
+}
+
+func (w *jsiiProxy_WasendClient) validateReadMessagesParameters(session *string, chatId *string, options *ReadMessagesOptions) error {
 	return nil
 }
 

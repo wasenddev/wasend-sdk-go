@@ -13,12 +13,24 @@ func init() {
 		reflect.TypeOf((*AccountInfo)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
-		"@wasend/core.ApiResponse",
-		reflect.TypeOf((*ApiResponse)(nil)).Elem(),
+		"@wasend/core.Chat",
+		reflect.TypeOf((*Chat)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.ChatOverview",
+		reflect.TypeOf((*ChatOverview)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.ChatPictureResponse",
+		reflect.TypeOf((*ChatPictureResponse)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
 		"@wasend/core.ChatRequest",
 		reflect.TypeOf((*ChatRequest)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.ChatWAMessage",
+		reflect.TypeOf((*ChatWAMessage)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
 		"@wasend/core.CheckContactExistsQueryParams",
@@ -57,6 +69,18 @@ func init() {
 		reflect.TypeOf((*GetAllSessionsResponse)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
+		"@wasend/core.GetChatPictureOptions",
+		reflect.TypeOf((*GetChatPictureOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.GetChatsOptions",
+		reflect.TypeOf((*GetChatsOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.GetChatsOverviewOptions",
+		reflect.TypeOf((*GetChatsOverviewOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
 		"@wasend/core.GetContactQueryParams",
 		reflect.TypeOf((*GetContactQueryParams)(nil)).Elem(),
 	)
@@ -67,6 +91,18 @@ func init() {
 	_jsii_.RegisterStruct(
 		"@wasend/core.GetGroupsQueryParams",
 		reflect.TypeOf((*GetGroupsQueryParams)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.GetMessageByIdOptions",
+		reflect.TypeOf((*GetMessageByIdOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.GetMessagesFilterOptions",
+		reflect.TypeOf((*GetMessagesFilterOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.GetMessagesOptions",
+		reflect.TypeOf((*GetMessagesOptions)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
 		"@wasend/core.GetProfilePictureQueryParams",
@@ -167,6 +203,10 @@ func init() {
 		reflect.TypeOf((*NowebStoreConfig)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
+		"@wasend/core.PaginationOptions",
+		reflect.TypeOf((*PaginationOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
 		"@wasend/core.ParticipantsRequest",
 		reflect.TypeOf((*ParticipantsRequest)(nil)).Elem(),
 	)
@@ -181,6 +221,18 @@ func init() {
 	_jsii_.RegisterStruct(
 		"@wasend/core.QRCodeResponse",
 		reflect.TypeOf((*QRCodeResponse)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.ReadChatMessagesResponse",
+		reflect.TypeOf((*ReadChatMessagesResponse)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.ReadMessagesOptions",
+		reflect.TypeOf((*ReadMessagesOptions)(nil)).Elem(),
+	)
+	_jsii_.RegisterStruct(
+		"@wasend/core.SdkResponse",
+		reflect.TypeOf((*SdkResponse)(nil)).Elem(),
 	)
 	_jsii_.RegisterStruct(
 		"@wasend/core.SendRequest",
@@ -241,6 +293,9 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "deleteGroupPicture", GoMethod: "DeleteGroupPicture"},
 			_jsii_.MemberMethod{JsiiMethod: "deleteSession", GoMethod: "DeleteSession"},
 			_jsii_.MemberMethod{JsiiMethod: "demoteGroupParticipants", GoMethod: "DemoteGroupParticipants"},
+			_jsii_.MemberMethod{JsiiMethod: "getAllChats", GoMethod: "GetAllChats"},
+			_jsii_.MemberMethod{JsiiMethod: "getChatPicture", GoMethod: "GetChatPicture"},
+			_jsii_.MemberMethod{JsiiMethod: "getChatsOverview", GoMethod: "GetChatsOverview"},
 			_jsii_.MemberMethod{JsiiMethod: "getContact", GoMethod: "GetContact"},
 			_jsii_.MemberMethod{JsiiMethod: "getContactProfilePicture", GoMethod: "GetContactProfilePicture"},
 			_jsii_.MemberMethod{JsiiMethod: "getContacts", GoMethod: "GetContacts"},
@@ -254,10 +309,13 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "getGroups", GoMethod: "GetGroups"},
 			_jsii_.MemberMethod{JsiiMethod: "getGroupsCount", GoMethod: "GetGroupsCount"},
 			_jsii_.MemberMethod{JsiiMethod: "getMessage", GoMethod: "GetMessage"},
+			_jsii_.MemberMethod{JsiiMethod: "getMessageById", GoMethod: "GetMessageById"},
+			_jsii_.MemberMethod{JsiiMethod: "getMessages", GoMethod: "GetMessages"},
 			_jsii_.MemberMethod{JsiiMethod: "joinGroup", GoMethod: "JoinGroup"},
 			_jsii_.MemberMethod{JsiiMethod: "leaveGroup", GoMethod: "LeaveGroup"},
 			_jsii_.MemberMethod{JsiiMethod: "processMessage", GoMethod: "ProcessMessage"},
 			_jsii_.MemberMethod{JsiiMethod: "promoteGroupParticipants", GoMethod: "PromoteGroupParticipants"},
+			_jsii_.MemberMethod{JsiiMethod: "readMessages", GoMethod: "ReadMessages"},
 			_jsii_.MemberMethod{JsiiMethod: "removeGroupParticipants", GoMethod: "RemoveGroupParticipants"},
 			_jsii_.MemberMethod{JsiiMethod: "restartSession", GoMethod: "RestartSession"},
 			_jsii_.MemberMethod{JsiiMethod: "retrieveAccount", GoMethod: "RetrieveAccount"},

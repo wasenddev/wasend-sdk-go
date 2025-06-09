@@ -6,7 +6,10 @@ A powerful SDK for managing WhatsApp sessions across multiple programming langua
 
 * Create and manage WhatsApp sessions
 * QR code authentication
-* Session status management (start, stop, restart)
+* Session status management (create, start, stop, restart, delete, get QR code, get session info, get all sessions)
+* Contact management (get contact, get all contacts, check if contact exists, get profile picture)
+* Message sending (text, image, video, file, voice, link with custom preview, mark messages as seen)
+* Group management (create, manage participants, settings, invites)
 * Account protection features
 * Message logging
 * Webhook support
@@ -55,33 +58,186 @@ go get github.com/wasenddev/wasend-sdk-go
 ### TypeScript/JavaScript Example
 
 ```go
-import { WasendClient } from '@wasend/core';
+import { WasendClient, SessionCreateRequest } from '@wasend/core';
 
-// Initialize the client
-const client = new WasendClient({
-    apiKey: 'your-api-key',
-    baseUrl: 'https://api.wasend.dev'
-});
+async function main() {
+    // Initialize the client
+    const client = new WasendClient({
+        apiKey: 'your-api-key',
+        baseUrl: 'https://api.wasend.dev'
+    });
 
-// Create a new session
-const session = await client.sessions.createSession({
-    sessionName: 'my-whatsapp-session',
-    phoneNumber: '+919876543210', // Example phone number
-    enableAccountProtection: true,
-    enableMessageLogging: true,
-    enableWebhook: false
-});
+    // Create a new session
+    const sessionParams: SessionCreateRequest = {
+        sessionName: 'my-whatsapp-session',
+        phoneNumber: '+919876543210', // Example phone number
+        enableAccountProtection: true,
+        enableMessageLogging: true,
+        enableWebhook: false
+    };
+    const session = await client.createSession(sessionParams);
 
-// Get QR code for authentication
-const qrCode = await client.sessions.getQRCode(session.uniqueSessionId);
-console.log('Scan this QR code with WhatsApp:', qrCode.data);
+    // Get QR code for authentication
+    const qrCode = await client.getQRCode(session.uniqueSessionId);
+    console.log('Scan this QR code with WhatsApp:', qrCode.data);
 
-// Start the session
-await client.sessions.startSession(session.uniqueSessionId);
+    // Start the session
+    await client.startSession(session.uniqueSessionId);
 
-// Get session information
-const sessionInfo = await client.sessions.getSessionInfo(session.uniqueSessionId);
-console.log('Session status:', sessionInfo.status);
+    // Get session information
+    const sessionInfo = await client.getSessionInfo(session.uniqueSessionId);
+    console.log('Session status:', sessionInfo.status);
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+
+```python
+from wasend_dev import WasendClient
+
+# Initialize the client
+client = WasendClient(api_key='your-api-key', base_url='https://api.wasend.dev')
+
+try:
+    # Create a new session
+    session = client.create_session(
+        session_name='my-whatsapp-session-python',
+        phone_number='+919876543210',  # Example phone number
+        enable_account_protection=True,
+        enable_message_logging=True,
+        enable_webhook=False
+    )
+    # Assuming session object has unique_session_id or similar attribute/key
+    # e.g., session.unique_session_id or session['uniqueSessionId']
+    # For this example, let's assume it's session.unique_session_id based on TS example structure
+
+    print(f"Session created with ID: {session.unique_session_id}")
+
+    # Get QR code for authentication
+    qr_code_response = client.get_qr_code(session_id=session.unique_session_id)
+    print(f"Scan this QR code with WhatsApp: {qr_code_response.data}")
+
+    # Start the session
+    client.start_session(session_id=session.unique_session_id)
+    print(f"Session {session.unique_session_id} starting...")
+
+    # Get session information
+    session_info = client.get_session_info(session_id=session.unique_session_id)
+    print(f"Session status: {session_info.status}")
+
+except Exception as e:
+    print(f"An error occurred: {e}")
+```
+
+### Go Example
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/wasenddev/wasend-sdk-go/wasend"
+)
+
+func main() {
+	// Initialize the client
+	// Ensure WasendClientOptions or similar struct is used if constructor expects it
+	client, err := wasend.NewClient("your-api-key", "https://api.wasend.dev") // Or wasend.NewClient(&wasend.Config{...})
+	if err != nil {
+		log.Fatalf("Error creating client: %v", err)
+	}
+
+	// Create a new session
+	sessionParams := wasend.SessionCreateRequest{
+		SessionName:             "my-whatsapp-session-go",
+		PhoneNumber:             "+919876543210", // Example phone number
+		EnableAccountProtection: true,
+		EnableMessageLogging:    true,
+		EnableWebHook:           false,
+	}
+	session, err := client.CreateSession(sessionParams)
+	if err != nil {
+		log.Fatalf("Error creating session: %v", err)
+	}
+	fmt.Println("Session created with ID:", session.UniqueSessionId)
+
+	// Get QR code for authentication
+	qrCode, err := client.GetQRCode(session.UniqueSessionId)
+	if err != nil {
+		log.Fatalf("Error getting QR code: %v", err)
+	}
+	fmt.Println("Scan this QR code with WhatsApp:", qrCode.Data)
+
+	// Start the session
+	_, err = client.StartSession(session.UniqueSessionId)
+	if err != nil {
+		log.Fatalf("Error starting session: %v", err)
+	}
+	fmt.Println("Session starting...")
+
+	// Get session information
+	sessionInfo, err := client.GetSessionInfo(session.UniqueSessionId)
+	if err != nil {
+		log.Fatalf("Error getting session info: %v", err)
+	}
+	fmt.Println("Session status:", sessionInfo.Status)
+}
+```
+
+### .NET Example
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using Wasend.Core;
+
+public class WasendExample
+{
+    public static async Task Main(string[] args)
+    {
+        // Initialize the client
+        var client = new WasendClient(new WasendClientOptions
+        {
+            ApiKey = "your-api-key",
+            BaseUrl = "https://api.wasend.dev"
+        });
+
+        try
+        {
+            // Create a new session
+            var sessionParams = new SessionCreateRequest
+            {
+                SessionName = "my-whatsapp-session-dotnet",
+                PhoneNumber = "+919876543210",
+                EnableAccountProtection = true,
+                EnableMessageLogging = true,
+                EnableWebHook = false
+            };
+            var session = await client.CreateSessionAsync(sessionParams);
+            Console.WriteLine($"Session created with ID: {session.UniqueSessionId}");
+
+            // Get QR code for authentication
+            var qrCode = await client.GetQRCodeAsync(session.UniqueSessionId);
+            Console.WriteLine($"Scan this QR code with WhatsApp: {qrCode.Data}");
+
+            // Start the session
+            await client.StartSessionAsync(session.UniqueSessionId);
+            Console.WriteLine($"Session {session.UniqueSessionId} starting...");
+
+            // Get session information
+            var sessionInfo = await client.GetSessionInfoAsync(session.UniqueSessionId);
+            Console.WriteLine($"Session status: {sessionInfo.Status}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+}
 ```
 
 ## Session Management
@@ -256,14 +412,14 @@ When retrieving groups, you can use various query parameters:
 
 ```go
 const groups = await client.getGroups(sessionId, {
-    sortBy: "creation",        // Sort by: 'id', 'subject', 'creation', 'participantsCount'
-    sortOrder: "desc",         // Sort order: 'asc' or 'desc'
-    limit: 50,                 // Maximum number of results
-    offset: 0,                 // Number of results to skip
-    exclude: ["participants"], // Fields to exclude from response
-    status: "ACTIVE",         // Filter by status: 'ACTIVE', 'ARCHIVED', 'DELETED'
-    search: "group name",     // Search by name or description
-    tags: ["tag1", "tag2"]    // Filter by tags
+    sortBy: "creation",
+    sortOrder: "desc",
+    limit: 50,
+    offset: 0,
+    exclude: ["participants"],
+    status: "ACTIVE",
+    search: "group name",
+    tags: ["tag1", "tag2"]
 });
 ```
 
@@ -285,7 +441,7 @@ A group can have the following statuses:
 4. The session will automatically connect once scanned
 
 ```go
-const qrCode = await client.sessions.getQRCode(sessionId);
+const qrCode = await client.getQRCode(sessionId);
 console.log('QR Code data:', qrCode.data);
 ```
 
@@ -329,6 +485,134 @@ try {
 }
 ```
 
+## Contact Management
+
+The SDK allows you to manage contacts associated with a session.
+
+### Get Contact Details
+
+```go
+const contactId = "contact_jid@c.us";
+const contact = await client.getContact(sessionId, contactId);
+console.log('Contact details:', contact);
+```
+
+### Get All Contacts
+
+```go
+const params = { limit: 10, offset: 0, sortBy: "name", sortOrder: "asc" };
+const contacts = await client.getContacts(sessionId, params);
+console.log('Contacts list:', contacts);
+```
+
+### Check if Contact Exists
+
+```go
+const phoneNumber = "1234567890";
+const exists = await client.checkContactExists(sessionId, { phone: phoneNumber });
+console.log(`Contact with phone ${phoneNumber} exists:`, exists);
+```
+
+### Get Profile Picture URL
+
+```go
+const contactIdForPic = "contact_jid@c.us";
+const picInfo = await client.getProfilePictureUrl(sessionId, { contactId: contactIdForPic, refresh: false });
+console.log('Profile picture URL:', picInfo.url);
+```
+
+## Message Sending
+
+The SDK provides methods to send various types of messages. All `send...` methods typically require the `sessionId` and a request object specific to the message type.
+
+### Send Text Message
+
+```go
+const textMessage = {
+    to: "recipient_jid@c.us",
+    text: "Hello from Wasend SDK!"
+};
+const sentMessageInfo = await client.sendTextMessage(sessionId, textMessage);
+console.log('Text message sent:', sentMessageInfo);
+```
+
+### Send Image Message
+
+```go
+const imageMessage = {
+    to: "recipient_jid@c.us",
+    url: "https://example.com/image.jpg",
+    caption: "Check out this image!"
+};
+const sentImageInfo = await client.sendImageMessage(sessionId, imageMessage);
+console.log('Image message sent:', sentImageInfo);
+```
+
+### Send Video Message
+
+```go
+const videoMessage = {
+    to: "recipient_jid@c.us",
+    url: "https://example.com/video.mp4",
+    caption: "Watch this cool video!"
+};
+const sentVideoInfo = await client.sendVideoMessage(sessionId, videoMessage);
+console.log('Video message sent:', sentVideoInfo);
+```
+
+### Send File/Document Message
+
+```go
+const fileMessage = {
+    to: "recipient_jid@c.us",
+    url: "https://example.com/document.pdf",
+    fileName: "document.pdf",
+    mimeType: "application/pdf"
+};
+const sentFileInfo = await client.sendFileMessage(sessionId, fileMessage);
+console.log('File message sent:', sentFileInfo);
+```
+
+### Send Voice Message
+
+```go
+const voiceMessage = {
+    to: "recipient_jid@c.us",
+    url: "https://example.com/audio.ogg",
+};
+const sentVoiceInfo = await client.sendVoiceMessage(sessionId, voiceMessage);
+console.log('Voice message sent:', sentVoiceInfo);
+```
+
+### Send Link with Custom Preview
+
+```go
+const linkPreview = {
+    title: "Wasend SDK",
+    description: "Powerful WhatsApp SDK",
+    thumbnailUrl: "https://example.com/logo.png"
+};
+
+const linkMessage = {
+    to: "recipient_jid@c.us",
+    text: "Check out this SDK: https://wasend.dev",
+    preview: linkPreview
+};
+const sentLinkInfo = await client.sendLinkWithCustomPreview(sessionId, linkMessage);
+console.log('Link message with custom preview sent:', sentLinkInfo);
+```
+
+### Mark Message as Seen
+
+```go
+const seenRequest = {
+    to: "sender_jid@c.us",
+    messageId: "message_id_to_mark_seen"
+};
+await client.sendSeen(sessionId, seenRequest);
+console.log('Message marked as seen.');
+```
+
 ## Best Practices
 
 1. Always store the `sessionId` after creating a session
@@ -350,3 +634,5 @@ For support, please contact:
 ## License
 
 This SDK is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file for details.
+
+For more detailed API information, please refer to the [API.md](API.md) file.
