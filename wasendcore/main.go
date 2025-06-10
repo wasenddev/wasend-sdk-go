@@ -317,7 +317,6 @@ func init() {
 			_jsii_.MemberMethod{JsiiMethod: "getMessages", GoMethod: "GetMessages"},
 			_jsii_.MemberMethod{JsiiMethod: "joinGroup", GoMethod: "JoinGroup"},
 			_jsii_.MemberMethod{JsiiMethod: "leaveGroup", GoMethod: "LeaveGroup"},
-			_jsii_.MemberMethod{JsiiMethod: "processMessage", GoMethod: "ProcessMessage"},
 			_jsii_.MemberMethod{JsiiMethod: "promoteGroupParticipants", GoMethod: "PromoteGroupParticipants"},
 			_jsii_.MemberMethod{JsiiMethod: "readMessages", GoMethod: "ReadMessages"},
 			_jsii_.MemberMethod{JsiiMethod: "removeGroupParticipants", GoMethod: "RemoveGroupParticipants"},

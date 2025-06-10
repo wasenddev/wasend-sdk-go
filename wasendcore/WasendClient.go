@@ -330,27 +330,6 @@ type WasendClient interface {
 	//     -H 'Authorization: Bearer {apiKey}'
 	//
 	LeaveGroup(sessionId *string, groupId *string)
-	// Utility method to process a message with proper timing and typing indicators This follows WhatsApp's guidelines to avoid being flagged as spam.
-	//
-	// Returns: Promise resolving to the sent message.
-	//
-	// Example:
-	//   // Send a text message with proper processing
-	//   const message = await client.processMessage({
-	//     session: "sessionId",
-	//     to: "+1234567890",
-	//     text: "Hello, World!"
-	//   });
-	//
-	//   // Send an image with caption and proper processing
-	//   const imageMessage = await client.processMessage({
-	//     session: "sessionId",
-	//     to: "+1234567890",
-	//     imageUrl: "https://example.com/image.jpg",
-	//     text: "Check out this image!"
-	//   });
-	//
-	ProcessMessage(request *SendRequest, options *map[string]*string) *WAMessage
 	// Promote participants to admin.
 	//
 	// Example:
@@ -530,10 +509,27 @@ type WasendClient interface {
 	//     }'
 	//
 	SendLinkCustomPreview(request *MessageLinkCustomPreviewRequest) *WAMessage
-	// Send a message to a recipient.
+	// Utility method to process a message with proper timing and typing indicators This follows WhatsApp's guidelines to avoid being flagged as spam.
 	//
-	// Returns: Promise resolving to the API response.
-	SendMessage(request *MessageRequest) *SdkResponse
+	// Returns: Promise resolving to the sent message.
+	//
+	// Example:
+	//   // Send a text message with proper processing
+	//   const message = await client.sendMessage({
+	//     session: "sessionId",
+	//     to: "+1234567890",
+	//     text: "Hello, World!"
+	//   });
+	//
+	//   // Send an image with caption and proper processing
+	//   const imageMessage = await client.sendMessage({
+	//     session: "sessionId",
+	//     to: "+1234567890",
+	//     imageUrl: "https://example.com/image.jpg",
+	//     text: "Check out this image!"
+	//   });
+	//
+	SendMessage(request *SendRequest, options *map[string]*string) *WAMessage
 	// React to a message with an emoji.
 	//
 	// Returns: Promise resolving to the API response.
@@ -1135,22 +1131,6 @@ func (w *jsiiProxy_WasendClient) LeaveGroup(sessionId *string, groupId *string) 
 	)
 }
 
-func (w *jsiiProxy_WasendClient) ProcessMessage(request *SendRequest, options *map[string]*string) *WAMessage {
-	if err := w.validateProcessMessageParameters(request); err != nil {
-		panic(err)
-	}
-	var returns *WAMessage
-
-	_jsii_.Invoke(
-		w,
-		"processMessage",
-		[]interface{}{request, options},
-		&returns,
-	)
-
-	return returns
-}
-
 func (w *jsiiProxy_WasendClient) PromoteGroupParticipants(sessionId *string, groupId *string, request *ParticipantsRequest) {
 	if err := w.validatePromoteGroupParticipantsParameters(sessionId, groupId, request); err != nil {
 		panic(err)
@@ -1356,16 +1336,16 @@ func (w *jsiiProxy_WasendClient) SendLinkCustomPreview(request *MessageLinkCusto
 	return returns
 }
 
-func (w *jsiiProxy_WasendClient) SendMessage(request *MessageRequest) *SdkResponse {
+func (w *jsiiProxy_WasendClient) SendMessage(request *SendRequest, options *map[string]*string) *WAMessage {
 	if err := w.validateSendMessageParameters(request); err != nil {
 		panic(err)
 	}
-	var returns *SdkResponse
+	var returns *WAMessage
 
 	_jsii_.Invoke(
 		w,
 		"sendMessage",
-		[]interface{}{request},
+		[]interface{}{request, options},
 		&returns,
 	)
 

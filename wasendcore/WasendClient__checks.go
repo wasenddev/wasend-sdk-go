@@ -367,17 +367,6 @@ func (w *jsiiProxy_WasendClient) validateLeaveGroupParameters(sessionId *string,
 	return nil
 }
 
-func (w *jsiiProxy_WasendClient) validateProcessMessageParameters(request *SendRequest) error {
-	if request == nil {
-		return fmt.Errorf("parameter request is required, but nil was provided")
-	}
-	if err := _jsii_.ValidateStruct(request, func() string { return "parameter request" }); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (w *jsiiProxy_WasendClient) validatePromoteGroupParticipantsParameters(sessionId *string, groupId *string, request *ParticipantsRequest) error {
 	if sessionId == nil {
 		return fmt.Errorf("parameter sessionId is required, but nil was provided")
@@ -512,7 +501,7 @@ func (w *jsiiProxy_WasendClient) validateSendLinkCustomPreviewParameters(request
 	return nil
 }
 
-func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *MessageRequest) error {
+func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *SendRequest) error {
 	if request == nil {
 		return fmt.Errorf("parameter request is required, but nil was provided")
 	}

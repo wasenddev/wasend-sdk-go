@@ -112,10 +112,6 @@ func (w *jsiiProxy_WasendClient) validateLeaveGroupParameters(sessionId *string,
 	return nil
 }
 
-func (w *jsiiProxy_WasendClient) validateProcessMessageParameters(request *SendRequest) error {
-	return nil
-}
-
 func (w *jsiiProxy_WasendClient) validatePromoteGroupParticipantsParameters(sessionId *string, groupId *string, request *ParticipantsRequest) error {
 	return nil
 }
@@ -160,7 +156,7 @@ func (w *jsiiProxy_WasendClient) validateSendLinkCustomPreviewParameters(request
 	return nil
 }
 
-func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *MessageRequest) error {
+func (w *jsiiProxy_WasendClient) validateSendMessageParameters(request *SendRequest) error {
 	return nil
 }
 
